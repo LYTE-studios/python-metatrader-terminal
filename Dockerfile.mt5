@@ -1,0 +1,41 @@
+# Use a base image with Wine installed
+FROM ubuntu:20.04
+
+# Set environment variables
+ENV DISPLAY=:0
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    software-properties-common \
+    wget \
+    xvfb \
+    wine32 \
+    wine64 \
+    winetricks \
+    cabextract \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Wine Gecko and Mono
+RUN winetricks --unattended gecko && \
+    winetricks --unattended mono
+
+# Create a directory for MetaTrader
+RUN mkdir -p /opt/metatrader
+
+# Download MetaTrader 5 installer
+RUN wget -O /opt/metatrader/mt5setup.exe "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe"
+
+# Install MetaTrader 5
+RUN xvfb-run -a wine /opt/metatrader/mt5setup.exe /silent
+
+# Set the working directory
+WORKDIR /opt/metatrader
+
+# Start MetaTrader terminal
+CMD ["xvfb-run", "-a", "wine", "terminal64.exe"]
+
+# Expose any necessary ports (e.g., for web interfaces or APIs)
+EXPOSE 8080
