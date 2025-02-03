@@ -1,32 +1,21 @@
-# Use a base image with Wine installed
-FROM ubuntu:20.04
+# Use the appropriate Windows base image
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
 
-# Set environment variables
+# Set environment variables as needed
 ENV DISPLAY=:0
-ENV DEBIAN_FRONTEND=noninteractive
-ENV WINEARCH=win64
 
-RUN apt-get update && apt-get install -y --no-install-recommends wget \
-    winetricks \
-    xvfb
+# Create a working directory for MetaTrader
+WORKDIR C:\\MetaTrader
 
-# Install Wine Gecko and Mono
-RUN winetricks --unattended list-all
+# Download MetaTrader 5 setup executable
+RUN powershell -Command "Invoke-WebRequest -Uri 'https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe' -OutFile 'C:\\MetaTrader\\mt5setup.exe' -UseBasicParsing"
 
-# Create a directory for MetaTrader
-RUN mkdir -p /opt/metatrader
+# Run the MetaTrader 5 setup
+RUN C:\\MetaTrader\\mt5setup.exe /silent
 
-# Download MetaTrader 5 installer
-RUN wget -O /opt/metatrader/mt5setup.exe "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe" --no-check-certificate
+# Main executable for MetaTrader 5
+# Verify the installation path and update if necessary
+CMD ["C:\\Program Files\\MetaTrader 5\\terminal64.exe"]
 
-# Install MetaTrader 5
-RUN xvfb-run -a wine /opt/metatrader/mt5setup.exe /silent
-
-# Set the working directory
-WORKDIR /opt/metatrader
-
-# Start MetaTrader terminal
-CMD ["xvfb-run", "-a", "wine", "terminal64.exe"]
-
-# Expose any necessary ports (e.g., for web interfaces or APIs)
+# Expose any necessary ports
 EXPOSE 8080
