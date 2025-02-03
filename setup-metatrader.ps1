@@ -8,7 +8,11 @@ $urlMT5 = "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5set
 
 # Download installers to a temporary directory
 $tempDir = "$env:TEMP\MetaTraderSetups"
-New-Item -Path $tempDir -ItemType Directory -Force
+
+if (-Not (Test-Path -Path $tempDir)) {
+    New-Item -Path $tempDir -ItemType Directory -Force
+}
+
 Invoke-WebRequest -Uri $urlMT4 -OutFile "$tempDir\mt4setup.exe"
 Invoke-WebRequest -Uri $urlMT5 -OutFile "$tempDir\mt5setup.exe"
 
