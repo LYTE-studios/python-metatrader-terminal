@@ -1,28 +1,26 @@
 # setup-metatrader.ps1
 
-# Set base installation path
+# Set variables
 $baseInstallPath = "C:\MetaTrader"
-
-# Set up directories for each version
-$mt4Path = "$baseInstallPath\MT4"
-$mt5Path = "$baseInstallPath\MT5"
-
-# URLs for setup files
 $urlMT4 = "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt4/mt4oldsetup.exe"
 $urlMT5 = "https://download.mql5.com/cdn/web/metaquotes.software.corp/mt5/mt5setup.exe"
 
-# Create installation directories
-New-Item -Path $mt4Path -ItemType Directory -Force
-New-Item -Path $mt5Path -ItemType Directory -Force
+# Download installers to temporary directory
+$tempDir = "$env:TEMP\MetaTraderSetups"
+New-Item -Path $tempDir -ItemType Directory -Force
+Invoke-WebRequest -Uri $urlMT4 -OutFile "$tempDir\mt4setup.exe"
+Invoke-WebRequest -Uri $urlMT5 -OutFile "$tempDir\mt5setup.exe"
 
-# Download MetaTrader 4
-Invoke-WebRequest -Uri $urlMT4 -OutFile "$mt4Path\mt4setup.exe"
+# Attempt installation with specified path (if possible)
+function Install-MetaTrader {
+    param (
+        [string]$installerPath,
+        [string]$targetInstallPath
+    )
 
-# Download MetaTrader 5
-Invoke-WebRequest -Uri $urlMT5 -OutFile "$mt5Path\mt5setup.exe"
+    # Check if a custom path can be set via arguments
+    Start-Process -FilePath $installerPath -ArgumentList "/silent", "/DIR=$targetInstallPath" -Wait
+}
 
-# Install MetaTrader 4 silently
-Start-Process -FilePath "$mt4Path\mt4setup.exe" -ArgumentList "/silent" -Wait
-
-# Install MetaTrader 5 silently
-Start-Process -FilePath "$mt5Path\mt5setup.exe" -ArgumentList "/silent" -Wait
+Install-MetaTrader -installerPath "$tempDir\mt4setup.exe" -targetInstallPath "$baseInstallPath\MT4"
+Install-MetaTrader -installerPath "$tempDir\mt5setup.exe" -targetInstallPath "$baseInstallPath\MT5"
