@@ -1,8 +1,11 @@
 # start-metatrader.ps1
 
+$defaultMt4Path = "C:\Program Files (x86)\MetaTrader 4"
+$defaultMt5Path = "C:\Program Files\MetaTrader 5"
+
 # Define the installation directories and executable paths
-$mt4Executable = "C:\MetaTrader\MT4\terminal.exe" # Adjust according to actual installation
-$mt5Executable = "C:\MetaTrader\MT5\terminal64.exe" # Adjust according to actual installation
+$mt4Executable = "$defaultMt4Path\terminal.exe" # Adjust according to actual installation
+$mt5Executable = "$defaultMt5Path\terminal64.exe" # Adjust according to actual installation
 
 # Function to start a MetaTrader terminal
 Function Start-MetaTrader($executablePath) {
