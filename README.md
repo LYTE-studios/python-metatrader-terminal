@@ -24,3 +24,33 @@ This project aims to create a Python-based web server that interfaces with MetaT
    ```bash
    git clone https://github.com/yourusername/python-metatrader-terminal.git
    cd python-metatrader-terminal
+   ```
+
+### Usage
+
+**Starting MetaTrader Terminals**
+
+To start the MetaTrader terminals without reinstalling them, use the `start-metatrader.ps1` script. This script is designed to launch MetaTrader 4 and MetaTrader 5 from their installed locations.
+
+1. **Open PowerShell as Administrator**:
+   - Ensure you have administrative privileges to run the script.
+
+2. **Navigate to the directory containing the script**:
+   - Use `cd` to change to the directory where `start-metatrader.ps1` is located.
+
+3. **Run the following command to execute the script**:
+   ```powershell
+   Set-ExecutionPolicy Bypass -Scope Process -Force
+   .\start-metatrader.ps1
+   ```
+
+This command will launch the MetaTrader terminals if they are installed at the specified paths in the script.
+
+## Future Enhancements
+
+1. Implement logging and monitoring for the API and terminals.
+2. Add support for additional trading platforms if needed.
+3. Optimize performance and scalability.
+```
+
+This updated section should display correctly and convey the instructions effectively. Ensure your markdown viewer or editor supports standard markdown rendering. Adjust paths and repository details as necessary for your specific use case.
