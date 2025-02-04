@@ -7,6 +7,8 @@ Invoke-WebRequest -Uri $pythonInstallerUrl -OutFile $installerPath
 
 Start-Process -FilePath $installerPath -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1" -Wait
 
+$env:Path += ";C:\Python39;C:\Python39\Scripts"
+
 # Upgrade pip
 python -m pip install --upgrade pip
 
