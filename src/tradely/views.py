@@ -19,7 +19,8 @@ class TradeListView(APIView):
     Fetch trades for authenticated account
     """
 
-    def get(self, request, account_id):
+    @staticmethod
+    def get(request, account_id):
         try:
             account = TradingAccount.objects.get(id=account_id)
             trades = Trade.objects.filter(trading_account=account)
@@ -39,11 +40,15 @@ class TradeSyncView(APIView):
     """
     Sync trades from MetaTrader terminal
     """
+    @staticmethod
+    def post(request):
+        account_id = request.data.get('account_id')
+        if not account_id:
+            return Response({"error": "account_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
-        user = request.user
+        # user = request.user
         try:
-            trading_account = TradingAccount.objects.get(user=user)
+            trading_account = TradingAccount.objects.get(id=account_id)
         except TradingAccount.DoesNotExist:
             return Response({"error": "Trading account not found"}, status=status.HTTP_404_NOT_FOUND)
 
