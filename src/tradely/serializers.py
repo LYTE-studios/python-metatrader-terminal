@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import TradingAccount, Trade
 
+
 class TradingAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradingAccount
@@ -10,6 +11,7 @@ class TradingAccountSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+
 
 class TradeSerializer(serializers.ModelSerializer):
     class Meta:

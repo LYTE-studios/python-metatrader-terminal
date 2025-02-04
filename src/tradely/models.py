@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
 
+
 class TradingAccount(models.Model):
     MT4 = 'MT4'
     MT5 = 'MT5'
@@ -25,7 +26,8 @@ class TradingAccount(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s {self.get_platform_type_display()} Account"
-    
+
+
 class Terminal(models.Model):
     ONLINE = 'ON'
     OFFLINE = 'OFF'
@@ -47,6 +49,7 @@ class Terminal(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_platform_type_display()})"
+
 
 class Trade(models.Model):
     BUY = 'BUY'
@@ -84,4 +87,3 @@ class Trade(models.Model):
 
     def __str__(self):
         return f"Trade #{self.order_id} ({self.symbol} {self.type})"
-    
