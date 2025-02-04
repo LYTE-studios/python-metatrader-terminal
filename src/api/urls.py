@@ -20,8 +20,6 @@ from tradely.views import MTAccountAuthView, TradeListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/mt-account/', MTAccountAuthView.as_view(), name='mt-auth'),
-    path('trades/<int:account_id>/', TradeListView.as_view(), name='trade-list'),
     path('api/', include('tradely.urls')),
     
 ]
