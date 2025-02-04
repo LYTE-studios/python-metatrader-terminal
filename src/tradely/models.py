@@ -10,10 +10,10 @@ class TradingAccount(models.Model):
         (MT5, 'MetaTrader 5'),
     ]
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='trading_accounts')
     platform_type = models.CharField(max_length=3, choices=PLATFORM_CHOICES)
     account_number = models.CharField(max_length=50)
-    password = models.CharField(max_length=255)  # Encrypt this field in practice
+    password = models.CharField(max_length=255)
     server = models.CharField(max_length=255)
     balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
     equity = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
