@@ -16,7 +16,11 @@ class MT5Client:
             # display trading account data 'as is'
             print(mt5.account_info())
         else:
-            print("failed to connect at account #{}, error code: {}".format(account, mt5.last_error()))
+            print(
+                "failed to connect at account #{}, error code: {}".format(
+                    account, mt5.last_error()
+                )
+            )
             return False
         return True
 
