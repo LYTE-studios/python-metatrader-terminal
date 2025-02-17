@@ -60,7 +60,6 @@ class MT5ConnectView(APIView):
                 password,
                 server,
             )
-            MT5Client.shutdown()
             if connect_status["status"]:
                 trading_account, created = TradingAccount.objects.update_or_create(
                     account_number=account,
