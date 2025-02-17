@@ -40,6 +40,58 @@ class TradeListView(APIView):
             )
 
 
+class MT5ConnectView(APIView):
+    """
+    Connect to MetaTrader5 and return login status
+    """
+
+    @staticmethod
+    def post(request):
+        account = request.data.get("account")
+        password = request.data.get("password")
+        server = request.data.get("server")
+        if not account or not password or not server:
+            return Response(
+                {"error": "parameters is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            connect_status, account_info = MT5Client.connect(
+                account,
+                password,
+                server,
+            )
+            if connect_status["status"]:
+                trading_account, created = TradingAccount.objects.update_or_create(
+                    account_number=account,
+                    defaults={
+                        "balance": account_info.balance,
+                        "equity": account_info.equity,
+                        "password": password,
+                        "server": server,
+                    },
+                )
+
+                return Response(
+                    {"status": "success", "account_info": account_info}
+                )
+            else:
+                return Response(
+                    {
+                        "status": "error",
+                        "error": "Failed to connect to MetaTrader",
+                        "error_code": connect_status["error_code"]},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        except Exception as e:
+            return Response(
+                {
+                    "status" : "error",
+                    "error": e
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
 class TradeSyncView(APIView):
     """
     Sync trades from MetaTrader terminal
@@ -61,7 +113,7 @@ class TradeSyncView(APIView):
                 {"error": "Trading account not found"}, status=status.HTTP_404_NOT_FOUND
             )
         try:
-            connect_status = MT5Client.connect(
+            connect_status, account_info = MT5Client.connect(
                 trading_account.account_number,
                 trading_account.password,
                 trading_account.server,

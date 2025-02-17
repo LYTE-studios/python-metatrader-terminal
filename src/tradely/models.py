@@ -14,7 +14,7 @@ class TradingAccount(models.Model):
     user = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE, related_name="trading_accounts"
     )
-    platform_type = models.CharField(max_length=3, choices=PLATFORM_CHOICES)
+    platform_type = models.CharField(max_length=3, choices=PLATFORM_CHOICES, default=MT5)
     account_number = models.CharField(max_length=50)
     password = models.CharField(max_length=255)
     server = models.CharField(max_length=255)
