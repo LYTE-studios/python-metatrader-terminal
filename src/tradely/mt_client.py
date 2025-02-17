@@ -9,7 +9,7 @@ class MT5Client:
         # if not mt5.initialize(path="C:/Program Files/MetaTrader 5/terminal64.exe"):
         if not mt5.initialize():
             print("initialize() failed, error code =", mt5.last_error())
-            return False
+            return False, None
 
         authorized = mt5.login(account, password=password, server=server)
         if authorized:
@@ -21,8 +21,8 @@ class MT5Client:
                     account, mt5.last_error()
                 )
             )
-            return False
-        return True
+            return False, None
+        return True, mt5.account_info()
 
     @staticmethod
     def get_orders(symbol=None, group=None):
