@@ -4,6 +4,7 @@ from rest_framework import status, generics
 from .models import TradingAccount, Trade
 from .serializers import TradingAccountSerializer, TradeSerializer
 from .mt_client import MT5Client
+from django.contrib.auth import get_user_model
 
 
 class MTAccountAuthView(generics.CreateAPIView):
@@ -52,17 +53,26 @@ class MT5ConnectView(APIView):
         server = request.data.get("server")
         if not account or not password or not server:
             return Response(
-                {"error": "parameters is required"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "parameters are required"}, status=status.HTTP_400_BAD_REQUEST
             )
+
         try:
-            connect_status, account_info = MT5Client.connect(
+            connect_status = MT5Client.connect(
                 account,
                 password,
                 server,
             )
+
             if connect_status["status"]:
+                User = get_user_model()
+                user, created = User.objects.get_or_create(
+                    username=account,
+                    defaults={"email": f"{account}@tradely.io", "password": password}
+                )
+                account_info = connect_status["account_info"]
                 trading_account, created = TradingAccount.objects.update_or_create(
                     account_number=account,
+                    user=user,
                     defaults={
                         "balance": account_info.balance,
                         "equity": account_info.equity,
@@ -76,19 +86,12 @@ class MT5ConnectView(APIView):
                 )
             else:
                 return Response(
-                    {
-                        "status": "error",
-                        "error": "Failed to connect to MetaTrader",
-                        "error_code": connect_status["error_code"]},
+                    {"error": "Failed to connect to MetaTrader", "error_code": connect_status["error_code"]},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         except Exception as e:
             return Response(
-                {
-                    "status" : "error",
-                    "error": e
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
