@@ -2,27 +2,22 @@ import MetaTrader5 as mt5
 
 
 class MT5Client:
-    # def __init__(self):
-
     @staticmethod
     def connect(account, password, server):
-        # if not mt5.initialize(path="C:/Program Files/MetaTrader 5/terminal64.exe"):
         if not mt5.initialize():
-            print("initialize() failed, error code =", mt5.last_error())
-            return False, None
+            error_code = mt5.last_error()
+            print("initialize() failed, error code =", error_code)
+            return {"status": False, "error_code": str(error_code)}
 
         authorized = mt5.login(account, password=password, server=server)
         if authorized:
-            # display trading account data 'as is'
-            print(mt5.account_info())
+            account_info = mt5.account_info()
+            print(account_info)
+            return {"status": True, "account_info": account_info}
         else:
-            print(
-                "failed to connect at account #{}, error code: {}".format(
-                    account, mt5.last_error()
-                )
-            )
-            return False, None
-        return True, mt5.account_info()
+            error_code = mt5.last_error()
+            print("failed to connect at account #{}, error code: {}".format(account, error_code))
+            return {"status": False, "error_code": str(error_code)}
 
     @staticmethod
     def get_orders(symbol=None, group=None):
