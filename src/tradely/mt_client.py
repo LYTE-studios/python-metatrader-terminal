@@ -9,7 +9,7 @@ class MT5Client:
             print("initialize() failed, error code =", error_code)
             return {"status": False, "error_code": str(error_code)}
 
-        authorized = mt5.login(account, password=password, server=server)
+        authorized = mt5.login(int(account), password=password, server=server)
         if authorized:
             account_info = mt5.account_info()
             print(account_info)
