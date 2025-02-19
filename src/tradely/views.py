@@ -82,7 +82,7 @@ class MT5ConnectView(APIView):
                 )
 
                 return Response(
-                    {"status": "success", "account_info": account_info}
+                    {"status": "success", "account_info": account_info._asdict()}
                 )
             else:
                 return Response(

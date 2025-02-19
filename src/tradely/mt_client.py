@@ -12,7 +12,6 @@ class MT5Client:
         authorized = mt5.login(int(account), password=password, server=server)
         if authorized:
             account_info = mt5.account_info()
-            print(account_info)
             return {"status": True, "account_info": account_info}
         else:
             error_code = mt5.last_error()
