@@ -53,7 +53,6 @@ class MT5Client:
             print("Error getting orders: ", e)
             return []
 
-
     @staticmethod
     def shutdown():
         mt5.shutdown()
