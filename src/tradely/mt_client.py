@@ -1,5 +1,5 @@
 import MetaTrader5 as mt5
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class MT5Client:
@@ -42,10 +42,12 @@ class MT5Client:
                 else:
                     orders = mt5.history_orders_get(date_from, date_to, group=group)
             else:
+                date_from = datetime.strptime("2000-01-01", "%Y-%m-%d")
+                date_to = datetime.today()
                 if group is None:
-                    orders = mt5.history_orders_get()
+                    orders = mt5.history_orders_get(date_from, date_to)
                 else:
-                    orders = mt5.history_orders_get(group=group)
+                    orders = mt5.history_orders_get(date_from, date_to, group=group)
             history_dict = [order._asdict() for order in orders]
             merged_orders = orders_dict + history_dict
             return merged_orders
