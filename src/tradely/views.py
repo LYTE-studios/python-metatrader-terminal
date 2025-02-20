@@ -106,6 +106,10 @@ class TradeSyncView(APIView):
     @staticmethod
     def post(request):
         account_id = request.data.get("account_id")
+        date_from = request.data.get("date_from")
+        date_to = request.data.get("date_to")
+        group = request.data.get("group")
+        symbol = request.data.get("symbol")
         if not account_id:
             return Response(
                 {"error": "account_id is required"}, status=status.HTTP_400_BAD_REQUEST
@@ -126,7 +130,7 @@ class TradeSyncView(APIView):
             )
 
             if connect_status:
-                orders = MT5Client.get_orders()
+                orders = MT5Client.get_orders(symbol, date_from, date_to, group)
                 MT5Client.shutdown()
                 return Response({"status": "success", "orders": orders})
             else:
