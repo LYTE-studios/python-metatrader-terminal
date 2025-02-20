@@ -67,7 +67,7 @@ class MT5ConnectView(APIView):
                 User = get_user_model()
                 user, created = User.objects.get_or_create(
                     username=account,
-                    defaults={"email": f"{account}@tradely.io", "password": password}
+                    defaults={"email": f"{account}@tradely.io", "password": password},
                 )
                 account_info = connect_status["account_info"]
                 trading_account, created = TradingAccount.objects.update_or_create(
@@ -86,7 +86,10 @@ class MT5ConnectView(APIView):
                 )
             else:
                 return Response(
-                    {"error": "Failed to connect to MetaTrader", "error_code": connect_status["error_code"]},
+                    {
+                        "error": "Failed to connect to MetaTrader",
+                        "error_code": connect_status["error_code"],
+                    },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         except Exception as e:
@@ -124,6 +127,52 @@ class TradeSyncView(APIView):
 
             if connect_status:
                 orders = MT5Client.get_orders()
+                MT5Client.shutdown()
+                return Response({"status": "success", "orders": orders})
+            else:
+                MT5Client.shutdown()
+                return Response(
+                    {"error": "Failed to connect to MetaTrader"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+class TradeHistoryView(APIView):
+    """
+    Sync trades from MetaTrader terminal
+    """
+
+    @staticmethod
+    def post(request):
+        account_id = request.data.get("account_id")
+        date_from = request.data.get("date_from")
+        date_to = request.data.get("date_to")
+        group = request.data.get("group")
+        if not account_id:
+            return Response(
+                {"error": "account_id is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # user = request.user
+        try:
+            trading_account = TradingAccount.objects.get(account_number=account_id)
+        except TradingAccount.DoesNotExist:
+            return Response(
+                {"error": "Trading account not found"}, status=status.HTTP_404_NOT_FOUND
+            )
+        try:
+            connect_status, account_info = MT5Client.connect(
+                trading_account.account_number,
+                trading_account.password,
+                trading_account.server,
+            )
+
+            if connect_status:
+                orders = MT5Client.get_history(date_from, date_to, group)
                 MT5Client.shutdown()
                 return Response({"status": "success", "orders": orders})
             else:

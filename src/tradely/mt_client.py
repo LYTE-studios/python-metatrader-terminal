@@ -15,7 +15,11 @@ class MT5Client:
             return {"status": True, "account_info": account_info}
         else:
             error_code = mt5.last_error()
-            print("failed to connect at account #{}, error code: {}".format(account, error_code))
+            print(
+                "failed to connect at account #{}, error code: {}".format(
+                    account, error_code
+                )
+            )
             return {"status": False, "error_code": str(error_code)}
 
     @staticmethod
@@ -28,10 +32,34 @@ class MT5Client:
             else:
                 orders = mt5.orders_get()
 
-            return orders
+            orders_dict = [order._asdict() for order in orders]
+            return orders_dict
         except Exception as e:
             print("Error getting orders: ", e)
-            return
+            return []
+
+    @staticmethod
+    def get_history(date_from=None, date_to=None, group="GROUP"):
+        try:
+            from datetime import datetime
+
+            if date_from and date_to:
+                date_from = datetime.strptime(date_from, "%Y-%m-%d")
+                date_to = datetime.strptime(date_to, "%Y-%m-%d")
+                if group is None:
+                    orders = mt5.history_orders_get(date_from, date_to)
+                else:
+                    orders = mt5.history_orders_get(date_from, date_to, group=group)
+            else:
+                if group is None:
+                    orders = mt5.history_orders_get()
+                else:
+                    orders = mt5.history_orders_get(group=group)
+            orders_dict = [order._asdict() for order in orders]
+            return orders_dict
+        except Exception as e:
+            print("Error getting orders: ", e)
+            return []
 
     @staticmethod
     def shutdown():
