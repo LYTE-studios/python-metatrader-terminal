@@ -67,7 +67,7 @@ class MT5ConnectView(APIView):
                 User = get_user_model()
                 user, created = User.objects.get_or_create(
                     username=account,
-                    defaults={"email": f"{account}@tradely.io", "password": password}
+                    defaults={"email": f"{account}@tradely.io", "password": password},
                 )
                 account_info = connect_status["account_info"]
                 trading_account, created = TradingAccount.objects.update_or_create(
@@ -86,7 +86,10 @@ class MT5ConnectView(APIView):
                 )
             else:
                 return Response(
-                    {"error": "Failed to connect to MetaTrader", "error_code": connect_status["error_code"]},
+                    {
+                        "error": "Failed to connect to MetaTrader",
+                        "error_code": connect_status["error_code"],
+                    },
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 )
         except Exception as e:
