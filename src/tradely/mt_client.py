@@ -1,4 +1,5 @@
 import MetaTrader5 as mt5
+from datetime import datetime
 
 
 class MT5Client:
@@ -23,7 +24,7 @@ class MT5Client:
             return {"status": False, "error_code": str(error_code)}
 
     @staticmethod
-    def get_orders(symbol=None, group=None):
+    def get_orders(symbol=None, date_from=None, date_to=None, group="GROUP"):
         try:
             if symbol:
                 orders = mt5.orders_get(symbol=symbol)
@@ -33,16 +34,6 @@ class MT5Client:
                 orders = mt5.orders_get()
 
             orders_dict = [order._asdict() for order in orders]
-            return orders_dict
-        except Exception as e:
-            print("Error getting orders: ", e)
-            return []
-
-    @staticmethod
-    def get_history(date_from=None, date_to=None, group="GROUP"):
-        try:
-            from datetime import datetime
-
             if date_from and date_to:
                 date_from = datetime.strptime(date_from, "%Y-%m-%d")
                 date_to = datetime.strptime(date_to, "%Y-%m-%d")
@@ -55,11 +46,13 @@ class MT5Client:
                     orders = mt5.history_orders_get()
                 else:
                     orders = mt5.history_orders_get(group=group)
-            orders_dict = [order._asdict() for order in orders]
-            return orders_dict
+            history_dict = [order._asdict() for order in orders]
+            merged_orders = orders_dict + history_dict
+            return merged_orders
         except Exception as e:
             print("Error getting orders: ", e)
             return []
+
 
     @staticmethod
     def shutdown():

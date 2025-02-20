@@ -13,6 +13,5 @@ urlpatterns = [
     path("auth/mt-account/", views.MTAccountAuthView.as_view(), name="mt-auth"),
     path("trades/<int:account_id>/", views.TradeListView.as_view(), name="trade-list"),
     path("mt5/get_trades/", views.TradeSyncView.as_view(), name="trade-sync"),
-    path("mt5/get_history/", views.TradeHistoryView.as_view(), name="trade-history"),
     path("mt5/connect/", views.MT5ConnectView.as_view(), name="mt5-connect"),
 ]
