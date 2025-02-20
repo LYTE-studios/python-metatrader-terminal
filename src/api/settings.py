@@ -16,7 +16,6 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 import sentry_sdk
 
 from .my_secrets import sentry_dsn
