@@ -38,16 +38,16 @@ class MT5Client:
                 date_from = datetime.strptime(date_from, "%Y-%m-%d")
                 date_to = datetime.strptime(date_to, "%Y-%m-%d")
                 if group is None:
-                    orders = mt5.history_orders_get(date_from, date_to)
+                    orders = mt5.history_deals_get(date_from, date_to)
                 else:
-                    orders = mt5.history_orders_get(date_from, date_to, group=group)
+                    orders = mt5.history_deals_get(date_from, date_to, group=group)
             else:
                 date_from = datetime.strptime("2000-01-01", "%Y-%m-%d")
                 date_to = datetime.today()
                 if group is None:
-                    orders = mt5.history_orders_get(date_from, date_to)
+                    orders = mt5.history_deals_get(date_from, date_to)
                 else:
-                    orders = mt5.history_orders_get(date_from, date_to, group=group)
+                    orders = mt5.history_deals_get(date_from, date_to, group=group)
             history_dict = [order._asdict() for order in orders] if orders else []
             merged_orders = orders_dict + history_dict
             return merged_orders
