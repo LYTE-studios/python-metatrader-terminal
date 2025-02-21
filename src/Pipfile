@@ -11,7 +11,6 @@ requests = "==2.31.0"
 sentry-sdk = "*"
 psycopg2 = "*"
 MetaTrader5 = "*"
-rest-framework-simplejwt = "*"
 
 [dev-packages]
 pytest = "==7.4.0"
