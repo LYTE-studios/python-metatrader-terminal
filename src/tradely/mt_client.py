@@ -5,9 +5,11 @@ from datetime import datetime, timedelta
 class MT5Client:
     @staticmethod
     def connect(account, password, server):
-        if not mt5.initialize():
+        path = "C:/Program Files/MetaTrader 5/terminal64.exe"
+        if not mt5.initialize(path=path, login=int(account), password=password, server=server):
             error_code = mt5.last_error()
             print("initialize() failed, error code =", error_code)
+            mt5.shutdown()
             return {"status": False, "error_code": str(error_code)}
 
         authorized = mt5.login(int(account), password=password, server=server)
