@@ -9,6 +9,8 @@ djangorestframework = "==3.14.0"
 requests = "==2.31.0"
 rest-framework-simplejwt = "*"
 sentry-sdk = "*"
+psycopg2 = "*"
+MetaTrader5 = "*"
 
 [dev-packages]
 pytest = "==7.4.0"
