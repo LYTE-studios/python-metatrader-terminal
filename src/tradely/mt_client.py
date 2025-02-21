@@ -31,9 +31,9 @@ class MT5Client:
             elif group:
                 orders = mt5.orders_get(group=group)
             else:
-                orders = mt5.orders_get()
+                orders = mt5.orders_get(symbol="SYMBOL")
 
-            orders_dict = [order._asdict() for order in orders]
+            orders_dict = [order._asdict() for order in orders] if orders else []
             if date_from and date_to:
                 date_from = datetime.strptime(date_from, "%Y-%m-%d")
                 date_to = datetime.strptime(date_to, "%Y-%m-%d")
@@ -48,7 +48,7 @@ class MT5Client:
                     orders = mt5.history_orders_get(date_from, date_to)
                 else:
                     orders = mt5.history_orders_get(date_from, date_to, group=group)
-            history_dict = [order._asdict() for order in orders]
+            history_dict = [order._asdict() for order in orders] if orders else []
             merged_orders = orders_dict + history_dict
             return merged_orders
         except Exception as e:
