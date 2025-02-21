@@ -7,10 +7,10 @@ name = "pypi"
 django = "==4.2.7"
 djangorestframework = "==3.14.0"
 requests = "==2.31.0"
-rest-framework-simplejwt = "*"
 sentry-sdk = "*"
 psycopg2 = "*"
 MetaTrader5 = "*"
+rest-framework-simplejwt = "*"
 
 [dev-packages]
 pytest = "==7.4.0"
