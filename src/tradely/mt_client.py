@@ -1,5 +1,5 @@
 import MetaTrader5 as mt5
-from datetime import datetime, timedelta
+from datetime import datetime
 
 
 class MT5Client:
@@ -7,7 +7,7 @@ class MT5Client:
     def connect(account, password, server):
         try:
             path = "C:/Program Files/MetaTrader 5/terminal64.exe"
-            if not mt5.initialize(path=path, login=int(account), password=password, server=server, portable=False):
+            if not mt5.initialize(path=path, login=int(account), password=password, server=server, portable=True):
                 error_code = mt5.last_error()
                 print("initialize() failed, error code =", error_code)
                 mt5.shutdown()
